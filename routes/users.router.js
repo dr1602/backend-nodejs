@@ -1,18 +1,21 @@
 const express = require('express');
 
+const UserServices = require('./../services/user.service');
+
 const router = express.Router();
+const service = new UserServices();
 
 router.get('/users', (req, res) => {
-  const users = [];
-  const { limit, offset } = req.query;
-  if(limit && offset ) {
-    res.json({
-      limit,
-      offset
-    });
-  } else {
-    res.send('No hay parámetros.');
-  }
+  const users = service.find();
+  res.json(users);
+});
+
+router.post('/', (req, res) => {
+  const body = req.body;
+  res.json({
+    message: 'created user',
+    data: body
+  });
 });
 
 router.get('/:id', (req, res) => {
@@ -37,30 +40,17 @@ router.get('/:id', (req, res) => {
   )
 });
 
-router.post('/', (req, res) => {
-  const body = req.body;
-  res.json({
-    message: 'created user',
-    data: body
-  });
-});
-
 router.patch('/:id', (req, res) => {
   const { id } = req.params;
   const body = req.body;
-  res.json({
-    message: 'updated user',
-    data: body,
-    id,
-  });
+  const user = service.update(id, body);
+  res.json(user);
 });
 
 router.delete('/:id', (req, res) => {
   const { id } = req.params;
-  res.json({
-    message: 'delete',
-    id,
-  })
-})
+  const rta = service.delete(id);
+  res.json(rta);
+});
 
 module.exports = router;

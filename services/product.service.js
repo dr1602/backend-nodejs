@@ -1,7 +1,8 @@
-const faker = require('faker');
-const boom = require('@hapi/boom');
+// vamos a usar programacion orientada a objetos
 
-class ProductsService {
+const { faker } = require('@faker-js/faker');
+
+class ProductService {
 
   constructor(){
     this.products = [];
@@ -12,18 +13,18 @@ class ProductsService {
     const limit = 100;
     for (let index = 0; index < limit; index++) {
       this.products.push({
-        id: faker.datatype.uuid(),
+        id: faker.string.uuid(),
         name: faker.commerce.productName(),
+        adjective: faker.commerce.productAdjective(),
+        description: faker.commerce.productDescription(),
         price: parseInt(faker.commerce.price(), 10),
-        image: faker.image.imageUrl(),
-        isBlock: faker.datatype.boolean(),
       });
-    }
+    };
   }
 
-  async create(data) {
+  create(data) {
     const newProduct = {
-      id: faker.datatype.uuid(),
+      id: faker.string.uuid(),
       ...data
     }
     this.products.push(newProduct);
@@ -31,28 +32,18 @@ class ProductsService {
   }
 
   find() {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve(this.products);
-      }, 3000);
-    })
+    return this.products;
   }
 
-  async findOne(id) {
-    const product = this.products.find(item => item.id === id);
-    if (!product) {
-      throw boom.notFound('product not found');
-    }
-    if (product.isBlock) {
-      throw boom.conflict('product is block');
-    }
-    return product;
+  findOne(id) {
+    return this.products.find(item => item.id === id);
+    // curso de manipulacion de arrays para su manipulacion, incluso el find
   }
 
-  async update(id, changes) {
+  update(id, changes) {
     const index = this.products.findIndex(item => item.id === id);
-    if (index === -1) {
-      throw boom.notFound('product not found');
+    if (index === -1){
+      throw new Error('product not found');
     }
     const product = this.products[index];
     this.products[index] = {
@@ -62,10 +53,10 @@ class ProductsService {
     return this.products[index];
   }
 
-  async delete(id) {
+  delete(id) {
     const index = this.products.findIndex(item => item.id === id);
     if (index === -1) {
-      throw boom.notFound('product not found');
+      throw new Error('product not found');
     }
     this.products.splice(index, 1);
     return { id };
@@ -73,4 +64,4 @@ class ProductsService {
 
 }
 
-module.exports = ProductsService;
+module.exports = ProductService;
