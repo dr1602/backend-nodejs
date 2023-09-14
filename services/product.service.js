@@ -22,7 +22,7 @@ class ProductService {
     };
   }
 
-  create(data) {
+  async create(data) {
     const newProduct = {
       id: faker.string.uuid(),
       ...data
@@ -32,15 +32,20 @@ class ProductService {
   }
 
   find() {
-    return this.products;
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        resolve(this.products);
+      }, 5000);
+    });
   }
 
-  findOne(id) {
+  async findOne(id) {
+    const name = this.getTotal();
     return this.products.find(item => item.id === id);
     // curso de manipulacion de arrays para su manipulacion, incluso el find
   }
 
-  update(id, changes) {
+  async update(id, changes) {
     const index = this.products.findIndex(item => item.id === id);
     if (index === -1){
       throw new Error('product not found');
@@ -53,11 +58,11 @@ class ProductService {
     return this.products[index];
   }
 
-  delete(id) {
+  async delete(id) {
     const index = this.products.findIndex(item => item.id === id);
     if (index === -1) {
       throw new Error('product not found');
-    }
+    } // si no encuentra el id, nos manda un error.
     this.products.splice(index, 1);
     return { id };
   }
