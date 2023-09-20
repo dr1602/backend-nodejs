@@ -16,4 +16,16 @@ function errorHandler(err, req, res, next) { // aunque no usemos next, lo debemo
   });
 } // si hay un error, quiero que sea un punto final
 
-module.exports = { logErrors, errorHandler }
+
+function boomErrorHandler(err, req, res, next) {
+  if (err.isBoom) {
+    const { output }= err;
+    res.status(output.statusCode).json(output.payload);
+  } else {
+    next(err);
+  }
+}
+
+// si no agregas ELSE, el codigo produce el error: Cannot set headers after they are sent to the children.
+
+module.exports = { logErrors, errorHandler, boomErrorHandler }
