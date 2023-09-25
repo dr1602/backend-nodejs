@@ -1,9 +1,9 @@
 const boom = require('@hapi/boom');
 
 function validatorHandler( schema, property ) {
-  return (req, res, next) => {
+  return (req, res, next) => { // este s un middleware porque tiene un req, res y next
     const data = req[property];
-    const { error } = schema.validate(data);
+    const { error } = schema.validate(data, { abortEarly: false});
     if (error) {
       next(boom.badRequest(error));
     }
