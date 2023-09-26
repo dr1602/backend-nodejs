@@ -1,6 +1,6 @@
 const express = require('express');
 
-const UserServices = require('./../services/user.service');
+const UserServices = require('../services/user.service');
 
 const router = express.Router();
 const service = new UserServices();
